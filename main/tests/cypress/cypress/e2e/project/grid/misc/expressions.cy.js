@@ -65,6 +65,17 @@ describe(__filename, function () {
     ).should('to.contain', 'butter,with salt');
   });
 
+  it('Test a valid Groovy expression', function () {
+    cy.loadAndVisitProject('food.mini');
+    loadExpressionPanel();
+    cy.get('select[bind="expressionPreviewLanguageSelect"]').select('groovy');
+    cy.typeExpression('(.. value (toLowerCase) )');
+    cy.get('.expression-preview-parsing-status').contains('No syntax error.');
+    cy.get(
+      '.expression-preview-table-wrapper tr:nth-child(2) td:last-child'
+    ).should('to.contain', 'butter,with salt');
+  });
+
   it('Test a Grel syntax error', function () {
     cy.loadAndVisitProject('food.mini');
     loadExpressionPanel();
