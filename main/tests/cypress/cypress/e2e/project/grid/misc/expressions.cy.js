@@ -69,7 +69,7 @@ describe(__filename, function () {
     cy.loadAndVisitProject('food.mini');
     loadExpressionPanel();
     cy.get('select[bind="expressionPreviewLanguageSelect"]').select('groovy');
-    cy.typeExpression('(.. value (toLowerCase) )');
+    cy.typeExpression('value.toLowerCase()');
     cy.get('.expression-preview-parsing-status').contains('No syntax error.');
     cy.get(
       '.expression-preview-table-wrapper tr:nth-child(2) td:last-child'
