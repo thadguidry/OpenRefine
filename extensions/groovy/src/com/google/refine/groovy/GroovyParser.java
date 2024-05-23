@@ -8,6 +8,8 @@ import com.google.refine.expr.HasFields;
 import com.google.refine.expr.LanguageSpecificParser;
 import com.google.refine.expr.ParsingException;
 
+import groovy.lang.Binding;
+import groovy.lang.GroovyObjectSupport;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import org.codehaus.groovy.control.CompilerConfiguration;
@@ -28,7 +30,7 @@ public class GroovyParser implements LanguageSpecificParser {
             GroovyShell shell = new GroovyShell(config);
             
             Object eval = shell.evaluate(
-                "(value, cell, cells, row, rowIndex)" + s
+                "[value cell cells row rowIndex]" + s
                 );
 
             return new Evaluable() {
@@ -43,12 +45,19 @@ public class GroovyParser implements LanguageSpecificParser {
                 @Override
                 public Object evaluate(Properties bindings) {
                     try {
-                        return _fn.invoke(
-                                bindings.get("value"),
-                                bindings.get("cell"),
-                                bindings.get("cells"),
-                                bindings.get("row"),
-                                bindings.get("rowIndex"));
+                        groovy.lang.Binding sharedData = new Binding(
+                            map(
+                                "value", bindings.get("value"),
+                                "cell",  bindings.get("cell"),
+                                "cells", bindings.get("cells"),
+                                "row",   bindings.get("row"),
+                                "rowIndex", bindings.get("rowIndex")
+                            )
+                        );
+                        return sharedData;   
+               ;
+                        
+
                     } catch (Exception e) {
                         return new EvalError(e.getMessage());
                     }
