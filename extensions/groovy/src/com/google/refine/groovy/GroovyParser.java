@@ -27,9 +27,10 @@ public class GroovyParser implements LanguageSpecificParser {
 
             CompilerConfiguration config = new CompilerConfiguration();
             config.setDebug(true);
-            GroovyShell shell = new GroovyShell(config);
+            config.setVerbose(true);
+            GroovyShell groovyShell = new GroovyShell(config);
             
-            Object eval = shell.evaluate(
+            Object result = groovyShell.evaluate(
                 "[value cell cells row rowIndex]" + s
                 );
 
@@ -37,8 +38,8 @@ public class GroovyParser implements LanguageSpecificParser {
 
                 private GroovyShell _fn;
 
-                public Evaluable init(GroovyShell eval) {
-                    _fn = eval;
+                public Evaluable init(GroovyShell result) {
+                    _fn = result;
                     return this;
                 }
 
@@ -62,7 +63,7 @@ public class GroovyParser implements LanguageSpecificParser {
                         return new EvalError(e.getMessage());
                     }
                 }
-            }.init(eval);
+            }.init(result);
         } catch (Exception e) {
             throw new ParsingException(e.getMessage());
         }
