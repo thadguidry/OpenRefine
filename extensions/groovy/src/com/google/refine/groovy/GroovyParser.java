@@ -2,10 +2,20 @@ package com.google.refine.groovy;
 
 import java.util.Properties;
 
+import com.google.refine.expr.EvalError;
+import com.google.refine.expr.Evaluable;
+import com.google.refine.expr.HasFields;
+import com.google.refine.expr.LanguageSpecificParser;
+import com.google.refine.expr.ParsingException;
+
 import groovy.lang.GroovyShell;
+import groovy.lang.Script;
+import org.codehaus.groovy.control.CompilerConfiguration;
+
 
 /**
  * A parser for expressions written in Groovy.
+ * Based on {@link com.google.refine.expr.ClojureParser}
  */
 public class GroovyParser implements LanguageSpecificParser {
 
@@ -13,9 +23,12 @@ public class GroovyParser implements LanguageSpecificParser {
     public Evaluable parse(String s) throws ParsingException {
         try {
 
-            GroovyShell shell = new GroovyShell();
-            groovy.lang.Script eval = shell.evaluate(
-                "return { value, cell, cells, row, rowIndex -> " + s + " }"
+            CompilerConfiguration config = new CompilerConfiguration();
+            config.setDebug(true);
+            GroovyShell shell = new GroovyShell(config);
+            
+            Object eval = shell.evaluate(
+                "(value, cell, cells, row, rowIndex)" + s
                 );
 
             return new Evaluable() {
