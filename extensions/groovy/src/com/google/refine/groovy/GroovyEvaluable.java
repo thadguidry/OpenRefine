@@ -1,6 +1,5 @@
 package com.google.refine.groovy;
 
-import java.util.Map;
 import java.util.Properties;
 
 import groovy.lang.Binding;
@@ -39,18 +38,15 @@ public class GroovyEvaluable implements Evaluable{
           
             // For JythonEvaluable, we call a custom function built.
             // For ClojureParser, we use it's IFn .invoke()
-            // For GroovyParser, we use .evaluate()
+            // For GroovyEvaluable, we use .evaluate()
 
-            groovy.lang.Binding sharedData = new Binding(
-                Map.of(
-                    "value", bindings.get("value"),
-                    "cell",  bindings.get("cell"),
-                    "cells", bindings.get("cells"),
-                    "row",   bindings.get("row"),
-                    "rowIndex", bindings.get("rowIndex")
-                )
-            );
-
+            groovy.lang.Binding sharedData = new Binding();
+            sharedData.setVariable("value", bindings.get("value"));
+            sharedData.setVariable("cell",  bindings.get("cell"));
+            sharedData.setVariable("cells", bindings.get("cells"));
+            sharedData.setVariable("row",   bindings.get("row"));
+            sharedData.setVariable("rowIndex", bindings.get("rowIndex"));
+            
             String script = "$value $cell $cells $row $rowIndex" + s;
             GroovyShell groovyShell = new GroovyShell(sharedData);
             return groovyShell.evaluate(script); 
