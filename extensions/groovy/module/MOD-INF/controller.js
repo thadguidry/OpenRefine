@@ -15,6 +15,6 @@ function init() {
       "groovy",
       "Groovy",
       Packages.com.google.refine.groovy.GroovyEvaluable.createParser(),
-      "return value"
+      "value"
     );
   }
