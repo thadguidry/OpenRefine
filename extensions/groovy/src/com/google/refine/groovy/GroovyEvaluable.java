@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
+import org.codehaus.groovy.control.CompilerConfiguration;
 
 import com.google.refine.expr.EvalError;
 import com.google.refine.expr.Evaluable;
@@ -37,10 +38,10 @@ public class GroovyEvaluable implements Evaluable{
     public Object evaluate(Properties bindings) {
         try {
           
-            // For JythonEvaluable, we call a custom function built.
-            // For ClojureParser, we use it's IFn .invoke()
-            // For GroovyEvaluable, we use .evaluate()
-
+            // Set the shared data (between Java <--> Groovy) for our Objects [value, cell, cells, row, and rowIndex] already binded.
+            // Additionally, in order for the script (s) to properly access those Java objects having fields,
+            // we first have to convert them in GroovyHasFieldsWrapper.java
+            
             groovy.lang.Binding sharedData = new Binding();
             sharedData.setProperty("value", bindings.get("value"));
             sharedData.setProperty("cell", new GroovyHasFieldsWrapper((HasFields) bindings.get("cell"), bindings));
@@ -48,8 +49,15 @@ public class GroovyEvaluable implements Evaluable{
             sharedData.setProperty("row", new GroovyHasFieldsWrapper((HasFields) bindings.get("row"), bindings));
             sharedData.setProperty("rowIndex", bindings.get("rowIndex"));
             
-            String script = "$value $cell $cells $row $rowIndex " + s;
-            GroovyShell groovyShell = new GroovyShell(sharedData);
+            // There are many Compiler options, see Groovy Docs
+            CompilerConfiguration config = new CompilerConfiguration();
+            // config.setDebug(true);
+
+            GroovyShell groovyShell = new GroovyShell(sharedData, config);
+            // The GroovyShell, rather than Eval, is used to evaluate the Groovy script (s)
+            // and return the result since GroovyShell supports caching.
+            // NOTE: the sharedData is passed seamlessly behind the scenes
+            // during the automatic Groovy Script.run() that happens during evaluate().
             return groovyShell.evaluate(s); 
                     
             } catch (Exception e) {
