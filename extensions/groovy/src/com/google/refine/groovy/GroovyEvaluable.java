@@ -49,7 +49,7 @@ public class GroovyEvaluable implements Evaluable{
             
             String script = "$value $cell $cells $row $rowIndex" + s;
             GroovyShell groovyShell = new GroovyShell(sharedData);
-            return groovyShell.evaluate(script); 
+            return groovyShell.evaluate(s); 
                     
             } catch (Exception e) {
             return new EvalError(e.getMessage());
