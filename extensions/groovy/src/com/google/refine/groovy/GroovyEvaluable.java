@@ -7,6 +7,7 @@ import groovy.lang.GroovyShell;
 
 import com.google.refine.expr.EvalError;
 import com.google.refine.expr.Evaluable;
+import com.google.refine.expr.HasFields;
 import com.google.refine.expr.LanguageSpecificParser;
 import com.google.refine.expr.ParsingException;
 
@@ -42,12 +43,12 @@ public class GroovyEvaluable implements Evaluable{
 
             groovy.lang.Binding sharedData = new Binding();
             sharedData.setProperty("value", bindings.get("value"));
-            sharedData.setProperty("cell",  bindings.get("cell"));
-            sharedData.setProperty("cells", bindings.get("cells"));
-            sharedData.setProperty("row",   bindings.get("row"));
+            sharedData.setProperty("cell", new GroovyHasFieldsWrapper((HasFields) bindings.get("cell"), bindings));
+            sharedData.setProperty("cells", new GroovyHasFieldsWrapper((HasFields) bindings.get("cells"), bindings));
+            sharedData.setProperty("row", new GroovyHasFieldsWrapper((HasFields) bindings.get("row"), bindings));
             sharedData.setProperty("rowIndex", bindings.get("rowIndex"));
             
-            String script = "$value $cell $cells $row $rowIndex" + s;
+            String script = "$value $cell $cells $row $rowIndex " + s;
             GroovyShell groovyShell = new GroovyShell(sharedData);
             return groovyShell.evaluate(s); 
                     
