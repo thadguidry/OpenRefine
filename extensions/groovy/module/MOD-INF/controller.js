@@ -14,8 +14,7 @@ function init() {
     Packages.com.google.refine.expr.MetaParser.registerLanguageParser(
       "groovy",
       "Groovy",
-      Packages.org.openrefine.groovy.GroovyParser(),
+      Packages.com.google.refine.groovy.GroovyEvaluable.createParser(),
       "return value"
     );
   }
-  MP.registerLanguageParser("clojure", "Clojure", new Packages.com.google.refine.expr.ClojureParser(), "value");
