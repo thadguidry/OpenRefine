@@ -41,11 +41,11 @@ public class GroovyEvaluable implements Evaluable{
             // For GroovyEvaluable, we use .evaluate()
 
             groovy.lang.Binding sharedData = new Binding();
-            sharedData.setVariable("value", bindings.get("value"));
-            sharedData.setVariable("cell",  bindings.get("cell"));
-            sharedData.setVariable("cells", bindings.get("cells"));
-            sharedData.setVariable("row",   bindings.get("row"));
-            sharedData.setVariable("rowIndex", bindings.get("rowIndex"));
+            sharedData.setProperty("value", bindings.get("value"));
+            sharedData.setProperty("cell",  bindings.get("cell"));
+            sharedData.setProperty("cells", bindings.get("cells"));
+            sharedData.setProperty("row",   bindings.get("row"));
+            sharedData.setProperty("rowIndex", bindings.get("rowIndex"));
             
             String script = "$value $cell $cells $row $rowIndex" + s;
             GroovyShell groovyShell = new GroovyShell(sharedData);
