@@ -36,7 +36,8 @@ public class GroovyParser implements LanguageSpecificParser {
 
             return new Evaluable() {
 
-                private GroovyShell _fn;
+                // Do we need to really init something
+                // for GroovyShell?  or can we skip this?
 
                 public Evaluable init(GroovyShell result) {
                     _fn = result;
@@ -46,16 +47,23 @@ public class GroovyParser implements LanguageSpecificParser {
                 @Override
                 public Object evaluate(Properties bindings) {
                     try {
-                        groovy.lang.Binding sharedData = new Binding(
-                            map(
-                                "value", bindings.get("value"),
-                                "cell",  bindings.get("cell"),
-                                "cells", bindings.get("cells"),
-                                "row",   bindings.get("row"),
-                                "rowIndex", bindings.get("rowIndex")
-                            )
+                        // need to actually run script here? seems like
+                        // For JythonEvaluable, we call a custom function built.
+                        // For ClojureParser, we use it's IFn .invoke()
+                        // For GroovyParser, we use .evaluate() ???
+
+                        return _fn.evaluate(
+                            script,
+                            groovy.lang.Binding sharedData = new Binding(
+                                map(
+                                    "value", bindings.get("value"),
+                                    "cell",  bindings.get("cell"),
+                                    "cells", bindings.get("cells"),
+                                    "row",   bindings.get("row"),
+                                    "rowIndex", bindings.get("rowIndex")
+                                )
                         );
-                        return sharedData;   
+        
                ;
                         
 
