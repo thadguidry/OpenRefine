@@ -199,7 +199,6 @@ if ""%ACTION%"" == """" goto doRun
 
 :doRun
 
-@echo off
 if "!PS!"=="true" (
     for /f %%i in ('powershell -Command "(Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory"') do set /a freeRam=%%i/1024
 ) else (
